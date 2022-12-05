@@ -21,7 +21,7 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, Pausable {
     mapping(address => bool) public claimed;
     bool public won;
 
-    constructor(address mother) ERC20("MyToken", "MTK") ERC20Permit("MyToken") {
+    constructor(address mother) ERC20("MyToken", "MTK") {
         token = IToken(mother);
         _mint(mother, token.getSupply(token.getCurrentId()));
     }

@@ -9,7 +9,7 @@ import "./libraries/MathLib.sol";
 
 
 contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Burnable {
-    constructor() ERC20("MyToken", "MTK") ERC20Permit("MyToken") {}
+    constructor() ERC20("MyToken", "MTK") {}
 
     function snapshot() public onlyOwner {
         _snapshot();
