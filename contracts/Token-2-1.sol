@@ -65,7 +65,7 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, Paus
         return eachTokenPrice;
     }
 
-    function exitMarket() external hasEntered whenPaused notClaimed returns(uint256) {
+    function exitMarket() external hasEntered whenPaused notClaimed {
         claimed[msg.sender] == true;
         if(won) {
             if(ethBalance[msg.sender] > 0) {
