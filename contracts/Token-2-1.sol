@@ -36,10 +36,12 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, Paus
 
     modifier hasEntered() {
         require(entered[msg.sender] == true, "You have to enter first");
+        _;
     }
 
     modifier notClaimed() {
         require(claimed[msg.sender] == false, "You claimed before");
+        _;
     }
 
     function enterMarket() external whenNotPaused returns(uint256) {
@@ -52,14 +54,14 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, Paus
     }
 
     function transferFunds() external whenPaused onlyOwner {
-        if(won) {payable(address(token)).transfer();}
+        if(won) {payable(address(token)).transfer(address(this).balance);}
     }
 
-    function endMarket(bool state) onlyOwner returns(uint256) {
-        uint256 realToken = totalSupply() - balanceOf(address);
+    function endMarket(bool state) external onlyOwner returns(uint256) {
+        uint256 realToken = totalSupply() - balanceOf(address(token));
         eachTokenPrice = address(this).balance / realToken;
         won = state;
-        pause();
+        _pause();
         return eachTokenPrice;
     }
 
@@ -78,8 +80,8 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, Paus
         } else {
             if(balanceOf(msg.sender) > 0) {               
                 uint256 balance = balanceOf(msg.sender);
-                burn(msg.sender, balance);
-                payable(msg.sender, balance * eachTokenPrice);       
+                _burn(msg.sender, balance);
+                payable(msg.sender).transfer(balance * eachTokenPrice);       
             }
         }
     }
@@ -124,7 +126,7 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, Paus
         require(_dS <= balanceOf(msg.sender) + tokenBalance[msg.sender], "not enough token.");
         if (balanceOf(msg.sender) == 0){
             tokenBalance[msg.sender] -= _dS;
-            uint sellAmount = sellPrice(balanceOf(_dS));
+            uint sellAmount = sellPrice(_dS);
             _burn(address(token), _dS);
             ethBalance[msg.sender] += sellAmount;
             return(tokenBalance[msg.sender]);

@@ -37,9 +37,9 @@ contract MyToken is ERC20, ERC20Snapshot, Ownable, ERC20Permit, ERC20Votes, ERC2
         return MathLib.sellIntegral(totalSupply(), _dS);
     }
  
-    function burnFrom(address account, uint256 amount) external {
-        burnFrom(account, amount);
-    }
+    // function burnFrom(address account, uint256 amount) external override(ERC20Burnable) {
+    //     burnFrom(account, amount);
+    // }
 
     function mint(address account, uint256 amount) external {
         _mint(account, amount);
